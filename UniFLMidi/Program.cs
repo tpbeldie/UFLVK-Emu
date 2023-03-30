@@ -183,6 +183,8 @@ namespace UniFLMidi
 
         private Rectangle m_stealFocusToggleRect;
 
+        private Rectangle m_alwaysTopRect;
+
         private Dictionary<Keys, int> MidiKeysMapping = new Dictionary<Keys, int>() {
             { Keys.Z, 48},
             { Keys.S, 49},
@@ -243,6 +245,7 @@ namespace UniFLMidi
             Click += (s, e) => Refresh();
             Text = "UFLVK Emu - Universal FL Studio Virtual Keyboard Emulator by tpbeldie";
             SystemParametersInfo(SPI_SETBEEP, 0, 0, SPIF_SENDCHANGE);
+            TopMost = true;
         }
 
         public int ScrollX {
@@ -300,6 +303,7 @@ namespace UniFLMidi
         }
 
         private void ChangeRootKey(int newRootKey) {
+            StopAllPlayingKeys();
             PlayingKeys.Clear();
             int rootNoteDiff = m_rootKey - newRootKey;
             var copy = new Dictionary<Keys, int>(MidiKeysMapping);
@@ -337,7 +341,7 @@ namespace UniFLMidi
             }
             else {
                 StopAllPlayingKeys();
-                if (m_beep) { 
+                if (m_beep) {
                     Console.Beep(667, 100);
                 }
             }
@@ -350,6 +354,7 @@ namespace UniFLMidi
             m_velKnobRect = new Rectangle(Width - 28, 35, 20, 20);
             m_beepToggleRect = new Rectangle(Width - 52, 80, 44, 12);
             m_stealFocusToggleRect = new Rectangle(Width - 124, 80, 70, 12);
+            m_alwaysTopRect = new Rectangle(m_stealFocusToggleRect.X - 64, 78, 60, 12);
             AssignKeys();
             Invalidate();
         }
@@ -524,6 +529,9 @@ namespace UniFLMidi
         }
 
         protected override void OnMouseDown(MouseEventArgs e) {
+            if (m_alwaysTopRect.Contains(e.Location)) {
+                TopMost = !TopMost;
+            }
             if (m_beepToggleRect.Contains(e.Location)) {
                 m_beep = !m_beep;
             }
@@ -618,7 +626,7 @@ namespace UniFLMidi
             var keyIndex = MidiKeysMapping[e.KeyPressed];
             currentlyPressedKeys.Add(e.KeyPressed);
             if (MidiKeysMapping.ContainsKey(e.KeyPressed) && !PlayingKeys.Contains(keyIndex)) {
-                if(m_stealFocus) {
+                if (m_stealFocus) {
                     SetForegroundWindow(Handle);
                 }
                 SendMidiSignal(MidiKeysMapping[e.KeyPressed], true);
@@ -746,6 +754,8 @@ namespace UniFLMidi
             e.Graphics.DrawString("Beep?", m_font, m_beep ? Brushes.White : Brushes.Gray, new Rectangle(0, m_resetButtonRect.Y, Width - 12, 24), m_farFormatFlag);
             e.Graphics.DrawString("Steal focus?", m_font, m_stealFocus ? Brushes.White : Brushes.Gray, new Rectangle(0, m_resetButtonRect.Y, Width - 56, 24), m_farFormatFlag);
             e.Graphics.FillEllipse(m_stealFocus ? Brushes.GreenYellow : Brushes.Gray, new Rectangle(Width - 124, 81, 6, 6));
+            e.Graphics.DrawString("Always top?", m_font, TopMost ? Brushes.White : Brushes.Gray, m_alwaysTopRect, m_farFormatFlag);
+            e.Graphics.FillEllipse(TopMost ? Brushes.GreenYellow : Brushes.Gray, new Rectangle(Width - 191, 81, 6, 6));
             OnPaintVelocityKnob(e);
             e.Graphics.SetClip(m_pianoRect);
             e.Graphics.TranslateTransform(ScrollX, 0);
