@@ -8,9 +8,9 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Media;
+using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Threading;
+using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Forms;
 
 namespace UniFLMidi
@@ -185,6 +185,8 @@ namespace UniFLMidi
 
         private Rectangle m_alwaysTopRect;
 
+        private readonly Icon m_icon;
+
         private Dictionary<Keys, int> MidiKeysMapping = new Dictionary<Keys, int>() {
             { Keys.Z, 48},
             { Keys.S, 49},
@@ -243,9 +245,34 @@ namespace UniFLMidi
             GenerateRectangles();
             GeneratePianoNotes();
             Click += (s, e) => Refresh();
-            Text = "UFLVK Emu - Universal FL Studio Virtual Keyboard Emulator by tpbeldie";
+            Text = "UFLVK Emu - Universal FL Studio Virtual Keyboard Emulator by @tpbeldie";
             SystemParametersInfo(SPI_SETBEEP, 0, 0, SPIF_SENDCHANGE);
             TopMost = true;
+            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("UFLVK_EMU.icon.ico")) {
+                m_icon = new Icon(stream);
+                Icon = m_icon;
+            }
+        }
+
+        protected override void OnHandleCreated(EventArgs e) {
+            base.OnHandleCreated(e);
+            var respHead = new Rectangle(0, 0, 60, 27);
+            MouseDown += (s, ev) => {
+                if (respHead.Contains(ev.Location)) {
+                    Process.Start("https://github.com/tpbeldie");
+                }
+            };
+            MouseMove += (s, ev) => {
+                if (respHead.Contains(ev.Location) || m_resetButtonRect.Contains(ev.Location)) {
+                    Cursor = Cursors.Hand;
+                }
+                else {
+                    if(Cursor == Cursors.Hand) {
+                        Invalidate();
+                    }
+                    Cursor = Cursors.Default;
+                }
+            };
         }
 
         public int ScrollX {
@@ -497,10 +524,6 @@ namespace UniFLMidi
                 m_velKnobRotation += 360;
             }
             m_velKnobValue = (int)(m_velKnobRotation / 360.0 * 101);
-            if (m_velKnobValue >= 101) {
-                m_velKnobRotation = 0;
-                m_velKnobValue = 0;
-            }
             Invalidate();
         }
 
@@ -553,6 +576,10 @@ namespace UniFLMidi
                 return;
             }
             if (m_resetButtonRect.Contains(e.Location)) {
+                m_velKnobValue = 100;
+                TopMost = false;
+                m_stealFocus = false;
+                m_beep = false;
                 m_thumbRect.X = 14;
                 ChangeRootKey(60);
                 StopAllPlayingKeys();
@@ -732,7 +759,7 @@ namespace UniFLMidi
             e.Graphics.Clear(m_mainColor);
             e.Graphics.DrawRectangle(m_borderPenDark, 0, 0, Width - 1, Height - 1);
             e.Graphics.DrawRectangle(m_borderPenLight, 1, 1, Width - 2, Height - 2);
-            e.Graphics.DrawString(Text, m_font, Focused ? m_titleTextBrushFocused : m_titleTextBrushUfocused, 7, 9);
+            e.Graphics.DrawString(Text, m_font, Focused ? m_titleTextBrushFocused : m_titleTextBrushUfocused, 27, 9);
             e.Graphics.FillRectangle(m_containerBrush, 4, 30, Width - 8, Height - 30 - 4);
             e.Graphics.PixelOffsetMode = PixelOffsetMode.HighSpeed;
             e.Graphics.DrawRectangle(m_containerBorderPen, 4, 30, Width - 8, Height - 30 - 4);
@@ -744,7 +771,7 @@ namespace UniFLMidi
             }
             e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
             e.Graphics.DrawRectangle(m_buttonBorderPen, m_resetButtonRect);
-            e.Graphics.DrawString("Reset", m_font, m_headerTitleBrush, m_resetButtonRect.X + 8, m_resetButtonRect.Y + 4);
+            e.Graphics.DrawString("Reset", m_font, m_resetButtonRect.Contains(m_mousePosition) ? Brushes.White : m_headerTitleBrush, m_resetButtonRect.X + 8, m_resetButtonRect.Y + 4);
             e.Graphics.FillRectangle(m_pianoBrushOne, 10, 94 + 74, Width - 18, 15);
             e.Graphics.FillRectangle(m_pianoBrushTwo, m_thumbRect);
             e.Graphics.FillRectangle(m_pianoBrushThree, m_pianoRect);
@@ -757,6 +784,7 @@ namespace UniFLMidi
             e.Graphics.DrawString("Always top?", m_font, TopMost ? Brushes.White : Brushes.Gray, m_alwaysTopRect, m_farFormatFlag);
             e.Graphics.FillEllipse(TopMost ? Brushes.GreenYellow : Brushes.Gray, new Rectangle(Width - 191, 81, 6, 6));
             OnPaintVelocityKnob(e);
+            e.Graphics.DrawIcon(m_icon, 2, 2);
             e.Graphics.SetClip(m_pianoRect);
             e.Graphics.TranslateTransform(ScrollX, 0);
             var whiteKeys = m_midiKeyboard.Where(i => i.KeyType == KeyColor.White);
