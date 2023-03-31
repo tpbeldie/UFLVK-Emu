@@ -50,6 +50,10 @@ It supports most of the features of FL Studio's virtual piano, with other bonus 
 
 * **And More** - You can discover them yourself. :smile:
 
+Here is a quick video demonstration in Bitwig. If I had FL STudio or another DAW opened, it would've worked on both simultaneously. 
+
+https://user-images.githubusercontent.com/122232758/229094232-23a8123b-ac8c-4ae7-a22e-0ae0407fd4be.mp4
+
 ## Requirements
 
 - NET Framework 4.6 or a higher version
@@ -77,5 +81,3 @@ Distributed under the MIT License. See [LICENSE](https://github.com/tpbeldie/UFL
 ## Authors
 
 * **tpbeldie**  - [Github Profile](https://github.com/tpbeldie) - *Main Developer*
-
-
