@@ -17,8 +17,6 @@
   </p>
 </p>
 
-![Downloads](https://img.shields.io/github/downloads/tpbeldie/UFLVK-Emu/total) ![Contributors](https://img.shields.io/github/contributors/tpbeldie/UFLVK-Emu?color=dark-green) ![Stargazers](https://img.shields.io/github/stars/tpbeldie/UFLVK-Emu?style=social) ![Issues](https://img.shields.io/github/issues/tpbeldie/UFLVK-Emu) ![License](https://img.shields.io/github/license/tpbeldie/UFLVK-Emu) 
-
 ## Contents
 
 * [About](#about)
