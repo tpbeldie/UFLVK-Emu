@@ -9,9 +9,6 @@
     Universal FL Studio Virtual Keyboard Emulator for all DAWs
     <br/>
     <br/>
-    <a href="https://github.com/tpbeldie/UFLVK-Emu"><strong>Explore the docs »</strong></a>
-    <br/>
-    <br/>
     <a href="https://github.com/tpbeldie/UFLVK-Emu">View Demo</a>
     .
     <a href="https://github.com/tpbeldie/UFLVK-Emu/issues">Report Bug</a>
