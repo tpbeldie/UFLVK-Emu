@@ -76,7 +76,7 @@ Here is a step-by step guide on how to get started.
 
 ## License
 
-Distributed under the MIT License. See [LICENSE](https://github.com/tpbeldie/UFLVK-Emu/blob/main/LICENSE.md) for more information.
+Distributed under the MIT License. See [LICENSE](https://github.com/tpbeldie/UFLVK-Emu/blob/master/LICENSE.txt) for more information.
 
 ## Authors
 
