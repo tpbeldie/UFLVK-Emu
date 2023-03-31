@@ -51,8 +51,6 @@ namespace UniFLMidi
         {
             public int Index { get; set; }
             public Rectangle Rectangle { get; set; }
-            public Keys Key { get; set; }
-            public int Note { get; set; }
             public KeyColor KeyType { get; set; }
             public bool CNoteKey { get; set; }
         }
@@ -187,6 +185,8 @@ namespace UniFLMidi
 
         private readonly Icon m_icon;
 
+        private Rectangle m_optionsRect;
+
         private Dictionary<Keys, int> MidiKeysMapping = new Dictionary<Keys, int>() {
             { Keys.Z, 48},
             { Keys.S, 49},
@@ -244,7 +244,6 @@ namespace UniFLMidi
             Size = new Size(568, 192);
             GenerateRectangles();
             GeneratePianoNotes();
-            Click += (s, e) => Refresh();
             Text = "UFLVK Emu - Universal FL Studio Virtual Keyboard Emulator by @tpbeldie";
             SystemParametersInfo(SPI_SETBEEP, 0, 0, SPIF_SENDCHANGE);
             TopMost = true;
