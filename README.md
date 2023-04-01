@@ -56,7 +56,7 @@ https://user-images.githubusercontent.com/122232758/229094232-23a8123b-ac8c-4ae7
 
 ## Requirements
 
-- NET Framework 4.6 or a higher version
+- Windows OS with NET Framework 4.6 or a higher version
 - This program uses loopMIDI as gateway of communicating with the DAW, which can only perceive loopMIDI's ports as MIDI Keyboards. So UFLVK-Emu will send the data to loopMIDI's port and loopMIDI will forward the data to the DAW. So you need to have it installed.
 
 You can download it from here: https://www.tobias-erichsen.de/software/loopmidi.html
